@@ -395,11 +395,15 @@ impl AccountManager {
         #[cfg(target_os = "macos")]
         let appdata = std::env::var("HOME")
             .map_err(|_| anyhow!("无法获取 HOME 环境变量"))?;
+        #[cfg(not(any(target_os = "windows", target_os = "macos")))]
+        let appdata = std::env::var("HOME").unwrap_or_default();
 
         #[cfg(target_os = "windows")]
         let base_dir = PathBuf::from(&appdata);
         #[cfg(target_os = "macos")]
         let base_dir = PathBuf::from(&appdata).join("Library").join("Application Support");
+        #[cfg(not(any(target_os = "windows", target_os = "macos")))]
+        let base_dir = PathBuf::from(&appdata).join(".local").join("share");
 
         let multi_dir = base_dir.join(format!("TRAE SOLO CN_{}", &account.user_id));
         let multi_dir_str = multi_dir.to_string_lossy().to_string();
@@ -410,6 +414,8 @@ impl AccountManager {
         #[cfg(target_os = "macos")]
         let shared_ext_dir = PathBuf::from(&appdata).join("Library").join("Application Support")
             .join("TRAE SOLO CN_SharedExtensions");
+        #[cfg(not(any(target_os = "windows", target_os = "macos")))]
+        let shared_ext_dir = base_dir.join("TRAE SOLO CN_SharedExtensions");
         let shared_ext_str = shared_ext_dir.to_string_lossy().to_string();
 
         // 调用多开启动
