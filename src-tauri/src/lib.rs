@@ -207,7 +207,7 @@ async fn bind_account_to_instance(
                 .ok()
                 .map(|p| std::path::PathBuf::from(p).join("TRAE SOLO CN_SharedExtensions").to_string_lossy().to_string());
             #[cfg(not(target_os = "windows"))]
-            let shared_ext = None;
+            let shared_ext: Option<String> = None;
 
             machine::open_product_with_data_dir(
                 machine::ProductType::TraeSoloCn,
@@ -260,7 +260,7 @@ async fn launch_instance(instance_id: String, state: State<'_, AppState>) -> Res
         .ok()
         .map(|p| std::path::PathBuf::from(p).join("TRAE SOLO CN_SharedExtensions").to_string_lossy().to_string());
     #[cfg(not(target_os = "windows"))]
-    let shared_ext = None;
+    let shared_ext: Option<String> = None;
 
     machine::open_product_with_data_dir(
         machine::ProductType::TraeSoloCn,

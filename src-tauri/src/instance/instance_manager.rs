@@ -318,6 +318,12 @@ impl InstanceManager {
         let default_data_dir = std::env::var("APPDATA")
             .map(|p| PathBuf::from(p).join("TRAE SOLO CN").to_string_lossy().to_string())
             .unwrap_or_else(|_| "TRAE SOLO CN".to_string());
+        #[cfg(target_os = "macos")]
+        let default_data_dir = std::env::var("HOME")
+            .map(|p| PathBuf::from(p).join("Library").join("Application Support").join("TRAE SOLO CN").to_string_lossy().to_string())
+            .unwrap_or_else(|_| "TRAE SOLO CN".to_string());
+        #[cfg(not(any(target_os = "windows", target_os = "macos")))]
+        let default_data_dir = "TRAE SOLO CN".to_string();
 
         let default_instance = TraeInstance::new(
             "默认".to_string(),
@@ -763,7 +769,7 @@ impl InstanceManager {
                     .ok()
                     .map(|p| PathBuf::from(p).join("TRAE SOLO CN_SharedExtensions").to_string_lossy().to_string());
                 #[cfg(not(target_os = "windows"))]
-                let shared_ext = None;
+                let shared_ext: Option<String> = None;
 
                 machine::open_product_with_data_dir(
                     machine::ProductType::TraeSoloCn,
@@ -844,7 +850,7 @@ impl InstanceManager {
             .ok()
             .map(|p| PathBuf::from(p).join("TRAE SOLO CN_SharedExtensions").to_string_lossy().to_string());
         #[cfg(not(target_os = "windows"))]
-        let shared_ext = None;
+        let shared_ext: Option<String> = None;
 
         machine::open_product_with_data_dir(
             machine::ProductType::TraeSoloCn,
